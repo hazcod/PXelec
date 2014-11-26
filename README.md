@@ -3,6 +3,8 @@ PXelec
 
 Automatic updater for OpenELEC machines that perform PXE booting.
 
+[PXE booting is booting from the network without any need for a local disk.](http://wiki.openelec.tv/index.php/Network_Boot_-_NFS)
+
 
 ## Steps
 1. Check for new image on OpenELEC website
