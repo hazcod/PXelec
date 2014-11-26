@@ -2,8 +2,9 @@ PXelec
 ======
 
 Automatic updater for OpenELEC machines that perform PXE booting.
+For your convience, you may want this script ran in the same environment as the XBMC SQL server.
 
-[PXE booting is booting from the network without any need for a local disk.](http://wiki.openelec.tv/index.php/Network_Boot_-_NFS)
+PXE booting? [PXE booting is booting from the network without any need for a local disk.](http://wiki.openelec.tv/index.php/Network_Boot_-_NFS)
 
 
 ## Instructions
