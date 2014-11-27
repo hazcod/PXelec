@@ -93,6 +93,9 @@ def main(argv=None):
 	global dl_url
 	global idle_treshold
 	
+	# Change to script folder
+	os.chdir(os.path.dirname(sys.argv[0]))
+	
 	clients=None
 	warnings.filterwarnings("ignore", category=UserWarning, module='urllib')
 
