@@ -24,3 +24,12 @@ Python 3.x
 5. (if ping successful and not busy) Issue shutdown
 6. Replace SYSTEM and KERNEL with those from the updated package
 7. Issue boot to all clients using WOL
+
+
+## Annex: Overlay
+To boot several OpenELEC systems using the same PXE config file and keep their Storage area separate, use 'disk=NFS=...' and add the 'overlay' option. Each OpenELEC system will create and use a directory on the NFS server named '/export/[MAC-address]'.
+Note that overlay mounts currently only work with NFS. In theory it should be possible with CIFS/SMB mounts also, but Busybox 'mount' currently doesn't support mounting subdirectories of SMB shares.
+
+Example (boot from NFS, mount each system's /storage from a unique directory in /var/lib/openelec):
+ip=dhcp boot=NFS=192.168.1.1:/tftpboot disk=NFS=192.168.1.1:/var/lib/openelec overlay
+We could then copy over our settings.
