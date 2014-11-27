@@ -146,13 +146,13 @@ def main(argv=None):
 		#urlretrieve(url, temp)
 		# unpack
 		log('Extracting..')
-		#tar = tarfile.open(temp)
-		#try:
-	#		tar.extractall()
-	#	finally:
-	#		tar.close()
+		tar = tarfile.open(temp)
+		try:
+			tar.extractall()
+		finally:
+			tar.close()
 		# remove tar
-	#	os.remove(temp)
+		os.remove(temp)
 		# change to openelec/target directory
 		os.chdir((dl_url + match.group(1)).split('/')[-1] + '/target');
 		theClients = []
@@ -168,8 +168,16 @@ def main(argv=None):
 			#We have online hosts
 			#http://kodi.wiki/view/JSON-RPC_API/v3#JSONRPC.Introspect
 			print(xbmc.System.GetProperties({"properties" : ["System.IdleTime"]}))#{ "items": ["System.ScreenSaverActive "] }}))
+			
+			#TODO: if host is idle:
+			#TODO: shutdown host
+			#TODO: sleep(10sec)
 		else:
 			log('No online hosts found')
+		
+		#TODO: Replace SYSTEM and KERNEL
+		
+		#TODO: Wake up (WOL?) clients
 
 	else:
 		# No update needed
