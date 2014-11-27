@@ -1,4 +1,5 @@
 #!/bin/env python
+# VERSION = "0.0.4.dev"
 
 import urllib, urllib
 import json
@@ -27,7 +28,8 @@ class XBMCJsonTransport(XBMCTransport):
     # Params are given as a dictionnary
     if len(args) == 1:
       args=args[0]
-    # Use kwargs for param=value style
+      params = kwargs 
+      # Use kwargs for param=value style
     else:
       args = kwargs
     params={}
@@ -78,7 +80,7 @@ class XBMCNamespace(object):
     return hook
 
 # Dynamic namespace class injection
-namespaces = ["VideoLibrary", "AudioLibrary", "Application", "Player", "Input", "System", "Playlist", "Addons", "AudioLibrary", "Files", "GUI" , "JSONRPC", "PVR", "xbmc"]
+namespaces = ["VideoLibrary", "Settings", "Favourites", "AudioLibrary", "Application", "Player", "Input", "System", "Playlist", "Addons", "AudioLibrary", "Files", "GUI" , "JSONRPC", "PVR", "xbmc"]
 for cl in namespaces:
   s = """class %s(XBMCNamespace):
   \"\"\"XBMC %s namespace. \"\"\"
