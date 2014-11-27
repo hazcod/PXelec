@@ -17,6 +17,7 @@ import argparse
 import stat
 import tarfile
 import warnings
+import time
 from XBMC import XBMC
 from urllib.request import urlopen, urlretrieve
 
@@ -37,6 +38,9 @@ debugging=True
 
 # Where to temporarily store OpenELEC image
 temp="OpenELEC.tar"
+
+# How long should a client receive no input before it's called idle
+idle_treshold=120
 #==
 
 # Variables
@@ -87,6 +91,7 @@ def main(argv=None):
 	global currentversion
 	global versionmatch
 	global dl_url
+	global idle_treshold
 	
 	clients=None
 	warnings.filterwarnings("ignore", category=UserWarning, module='urllib')
@@ -95,12 +100,13 @@ def main(argv=None):
 	if argv is None:
 		parser = argparse.ArgumentParser()
 		parser.add_argument("Clientlist", help="File of IP adresses of all OpenELEC clients, one per line.")
+		parser.add_argument("Path", help="The path of your OpenELEC XPE boot files (kernel, SYSTEM)")
 		parser.add_argument("-l","--login", help="XBMC RPC login user.")
 		parser.add_argument("-p","--password", help="XBMC RPC login password.")
 		parser.add_argument("-P","--port", help="XBMC RPC login port.")
 		parser.add_argument("-v", "--version", help="Version to update to. Leave this empty for the latest one.")
 		args = parser.parse_args()
-		if (args.Clientlist is not None):
+		if (args.Clientlist is not None and args.Path is not None):
 			if not (os.path.isfile(args.Clientlist)):
 				raise Exception("Clientlist must exist!")
 				quit()
@@ -135,6 +141,7 @@ def main(argv=None):
 	if (repo_source is None):
 		raise Exception("No internet access!")
 		quit()
+		
 	match = re.search(versionmatch, repo_source)
 	version = int(match.group(1).replace(".",""))
 	log("Latest update: " + match.group(1))
@@ -143,7 +150,7 @@ def main(argv=None):
 		log("Update needed")
 		url = dl_url + match.group(1) + '.tar'
 		log("Downloading " + url + " to " + temp)
-		#urlretrieve(url, temp)
+		urlretrieve(url, temp)
 		# unpack
 		log('Extracting..')
 		tar = tarfile.open(temp)
@@ -168,10 +175,10 @@ def main(argv=None):
 			#We have online hosts
 			#http://kodi.wiki/view/JSON-RPC_API/v3#JSONRPC.Introspect
 			print(xbmc.System.GetProperties({"properties" : ["System.IdleTime"]}))#{ "items": ["System.ScreenSaverActive "] }}))
-			
-			#TODO: if host is idle:
-			#TODO: shutdown host
-			#TODO: sleep(10sec)
+			#timeIdle = None
+			if (timeIdle >= idle_treshold):
+				#xbmc.shutdown()
+				time.sleep(10)
 		else:
 			log('No online hosts found')
 		
