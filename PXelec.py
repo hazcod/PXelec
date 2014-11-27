@@ -41,6 +41,9 @@ temp="OpenELEC.tar"
 
 # How long should a client receive no input before it's called idle
 idle_treshold=120
+
+# Should we update to other major releases? It's generally recommended to start over again with major updates.
+majorupdate=False
 #==
 
 # Variables
@@ -92,6 +95,7 @@ def main(argv=None):
 	global versionmatch
 	global dl_url
 	global idle_treshold
+	global majorupdate
 	
 	# Change to script folder
 	os.chdir(os.path.dirname(sys.argv[0]))
@@ -104,6 +108,7 @@ def main(argv=None):
 		parser = argparse.ArgumentParser()
 		parser.add_argument("Clientlist", help="File of IP adresses of all OpenELEC clients, one per line.")
 		parser.add_argument("Path", help="The path of your OpenELEC XPE boot files (kernel, SYSTEM)")
+		parser.add_argument("--major", action='store_true', help="Do update to new major releases.")
 		parser.add_argument("-l","--login", help="XBMC RPC login user.")
 		parser.add_argument("-p","--password", help="XBMC RPC login password.")
 		parser.add_argument("-P","--port", help="XBMC RPC login port.")
@@ -121,6 +126,8 @@ def main(argv=None):
 				RPC_login = args.login
 			if (args.password) and not (args.password.trim() == ""):
 				RPC_pass = args.password
+			if (args.major) and (args.major == True):
+				majorupdate=True
 		else:
 			raise Exception("Must provide an argument!")
 			Usage()
@@ -134,9 +141,9 @@ def main(argv=None):
 		finally:
 			f.close()
 	else:
-		current = int(openFile(versionfile))
+		current = openFile(versionfile)
 
-	log("Current version: " + str(currentversion))
+	log("Current version: " + currentversion)
 
 	# Get latest version
 	repo_source = None;
@@ -146,7 +153,16 @@ def main(argv=None):
 		quit()
 		
 	match = re.search(versionmatch, repo_source)
+	# check major versions
+	if majorupdate not True:
+		newmajor = int(match.group(1).split(".")[0])
+		currentmajor = int(currentversion.split(".")[0])
+		if (newmajor > currentmajor):
+			raise Exception("Major update! You chose not to update this. Exiting..")
+			quit()
+	
 	version = int(match.group(1).replace(".",""))
+	currentversion = int(currentversion.replace(".",""))
 	log("Latest update: " + match.group(1))
 	if (version > currentversion):
 		# Update!
